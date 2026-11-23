@@ -1,0 +1,270 @@
+[
+    {
+        "data_hora": "20/11/2026 11:54:31",
+        "ip": "172.27.24.3",
+        "setor": "KADOU CENTER MATEHAN",
+        "modelo": "IM 2500",
+        "serie": "4412R100009",
+        "insumos_trocados": [
+            "Toner Preto",
+            "Papel A4"
+        ],
+        "contador_momento": "36177",
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:22",
+        "ip": "172.27.24.36",
+        "setor": "MONTAGEM TRIM",
+        "modelo": "IM 2500",
+        "serie": "4412R920108",
+        "insumos_trocados": [
+            "Papel A3"
+        ],
+        "contador_momento": 9032,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:19",
+        "ip": "172.27.32.73",
+        "setor": "MONTAGEM FINAL",
+        "modelo": "SP 8400DN",
+        "serie": "Y873R110252",
+        "insumos_trocados": [
+            "Papel A3"
+        ],
+        "contador_momento": 224334,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:18",
+        "ip": "172.27.26.1",
+        "setor": "OFFICE DA PINTURA",
+        "modelo": "IM 2500",
+        "serie": "4412R920081",
+        "insumos_trocados": [
+            "Papel A3"
+        ],
+        "contador_momento": 56294,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:18",
+        "ip": "172.28.52.130",
+        "setor": "OFFICE FERRAMENTARIA",
+        "modelo": "IM 2500",
+        "serie": "4412R920002",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 27244,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:17",
+        "ip": "172.27.26.33",
+        "setor": "PINTURA - INSPEÇÃO ED",
+        "modelo": "IM 2500",
+        "serie": "4412R620291",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 19356,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:17",
+        "ip": "172.27.27.2",
+        "setor": "FUNILARIA SHELL BODY/ÁREA DO CAFÉ",
+        "modelo": "IM 2500",
+        "serie": "4412R920029",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 165802,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:16",
+        "ip": "172.27.24.2",
+        "setor": "INSPEÇÃO-OFFICE",
+        "modelo": "IM 2500",
+        "serie": "4412R620358",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 31078,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:14:14",
+        "ip": "172.27.26.9",
+        "setor": "LABORATÓRIO RESINA",
+        "modelo": "IM 2500",
+        "serie": "4412R920025",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 22070,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 14:13:50",
+        "ip": "172.27.11.201",
+        "setor": "SHOP OFFICE SOR 2",
+        "modelo": "IM 2500",
+        "serie": "4412R700165",
+        "insumos_trocados": [
+            "Papel A4",
+            "Papel A3"
+        ],
+        "contador_momento": 270381,
+        "tecnico": "Luiz teste 2"
+    },
+    {
+        "data_hora": "19/11/2026 14:11:50",
+        "ip": "172.27.24.3",
+        "setor": "KADOU CENTER MATEHAN",
+        "modelo": "IM 2500",
+        "serie": "4412R100009",
+        "insumos_trocados": [
+            "Toner Preto"
+        ],
+        "contador_momento": 36177,
+        "tecnico": "Luiz teste 2"
+    },
+    {
+        "data_hora": "19/11/2026 13:09:28",
+        "ip": "172.27.24.36",
+        "setor": "MONTAGEM TRIM",
+        "modelo": "IM 2500",
+        "serie": "4412R920108",
+        "insumos_trocados": [
+            "Papel A3"
+        ],
+        "contador_momento": 9032,
+        "tecnico": "Luiz teste 2"
+    },
+    {
+        "data_hora": "19/11/2026 13:09:25",
+        "ip": "172.27.32.73",
+        "setor": "MONTAGEM FINAL",
+        "modelo": "SP 8400DN",
+        "serie": "Y873R110252",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 224334,
+        "tecnico": "Luiz teste 2"
+    },
+    {
+        "data_hora": "19/11/2026 13:09:22",
+        "ip": "172.27.32.72",
+        "setor": "MONTAGEM ENGINE",
+        "modelo": "P 502",
+        "serie": "5382P602558",
+        "insumos_trocados": [
+            "Toner Preto"
+        ],
+        "contador_momento": 123016,
+        "tecnico": "Luiz teste 2"
+    },
+    {
+        "data_hora": "19/11/2026 13:08:21",
+        "ip": "172.27.24.3",
+        "setor": "KADOU CENTER MATEHAN",
+        "modelo": "IM 2500",
+        "serie": "4412R100009",
+        "insumos_trocados": [
+            "Toner Preto",
+            "Papel A4",
+            "Papel A3"
+        ],
+        "contador_momento": 36177,
+        "tecnico": "Luiz teste"
+    },
+    {
+        "data_hora": "19/11/2026 06:34:07",
+        "ip": "172.27.24.3",
+        "setor": "KADOU CENTER MATEHAN",
+        "modelo": "IM 2500",
+        "serie": "4412R100009",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 36173,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 06:34:07",
+        "ip": "172.27.24.4",
+        "setor": "ÁREA CAFÉ JUNDATE CENTRAL",
+        "modelo": "IM 2500",
+        "serie": "4412R200201",
+        "insumos_trocados": [
+            "Papel A3"
+        ],
+        "contador_momento": 79538,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 06:34:06",
+        "ip": "172.27.26.9",
+        "setor": "LABORATÓRIO RESINA",
+        "modelo": "IM 2500",
+        "serie": "4412R920025",
+        "insumos_trocados": [
+            "Papel A3"
+        ],
+        "contador_momento": 22070,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 06:34:06",
+        "ip": "172.27.26.8",
+        "setor": "PRODUÇÃO BUMPER RESINA",
+        "modelo": "IM 2500",
+        "serie": "4412R620379",
+        "insumos_trocados": [
+            "Papel A4"
+        ],
+        "contador_momento": 21109,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 06:34:03",
+        "ip": "172.27.11.203",
+        "setor": "SHOP OFFICE SOR2",
+        "modelo": "MP CW2201SP",
+        "serie": "G931M110118",
+        "insumos_trocados": [
+            "Bobina A0"
+        ],
+        "contador_momento": 9594,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "19/11/2026 06:33:18",
+        "ip": "172.27.24.3",
+        "setor": "KADOU CENTER MATEHAN",
+        "modelo": "IM 2500",
+        "serie": "4412R100009",
+        "insumos_trocados": [
+            "Toner Preto"
+        ],
+        "contador_momento": 36173,
+        "tecnico": "Luiz"
+    },
+    {
+        "data_hora": "18/11/2026 08:23:34",
+        "ip": "172.28.100.20",
+        "setor": "RESERVA",
+        "modelo": "IM 2500",
+        "serie": "4412R620337",
+        "insumos_trocados": [
+            "Toner Preto"
+        ],
+        "contador_momento": 139533,
+        "tecnico": "Luiz"
+    }
+]

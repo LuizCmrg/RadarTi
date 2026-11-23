@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRISM | Printer &amp; Resource Intelligent Status Monitor</title>
+
+    <link rel="icon" id="dynamicFavicon" type="image/jpeg" href="/static/prism-logo.jpeg">
+    <link rel="shortcut icon" href="/static/prism-logo.jpeg">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --brand-primary: rgb(204, 0, 0);
+            --brand-primary-hover: rgb(170, 0, 0);
+            --clp-orange: #e67e22;
+            --shijibira-red: #d63031;
+            --office-blue: #0984e3;
+            --epson-teal: #006680;
+            --zebra-black: #111111;
+            --bg-color: rgb(244, 246, 249);
+            --card-bg: rgb(255, 255, 255);
+            --text-primary: rgb(33, 37, 41);
+            --text-secondary: rgb(108, 117, 125);
+            --border-color: rgb(225, 232, 237);
+            --control-bg: rgb(255, 255, 255);
+            --toggle-bg: rgb(241, 243, 245);
+            --modal-overlay: rgba(0, 0, 0, 0.6);
+            --report-bg: rgb(248, 249, 250);
+            --status-online: rgb(46, 204, 113);
+            --status-offline: rgb(231, 76, 60);
+            --status-warning: rgb(241, 196, 15);
+        }
+
+        body.dark-mode {
+            --bg-color: rgb(18, 18, 18);
+            --card-bg: rgb(28, 30, 32);
+            --text-primary: rgb(238, 238, 238);
+            --text-secondary: rgb(160, 165, 170);
+            --border-color: rgb(48, 52, 58);
+            --control-bg: rgb(28, 30, 32);
+            --toggle-bg: rgb(40, 44, 48);
+            --modal-overlay: rgba(0, 0, 0, 0.85);
+            --report-bg: rgb(38, 41, 45);
+            --zebra-black: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        body { background-color: var(--bg-color); color: var(--text-primary); padding: 20px 25px; }
+
+        header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding-bottom: 15px; border-bottom: 2px solid var(--border-color); }
+        .header-title { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .prism-logo-container { display: flex; align-items: center; gap: 12px; }
+        .prism-logo-img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 3px;
+            border: 1.5px solid var(--border-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            flex-shrink: 0;
+        }
+        .brand-text-group { display: flex; flex-direction: column; line-height: 1.15; }
+        .brand-prism { font-size: 1.65rem; font-weight: 900; color: var(--brand-primary); letter-spacing: 1px; }
+        .brand-sub { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.6px; text-transform: uppercase; margin-top: 2px; }
+        .header-divider { width: 2px; height: 40px; background-color: var(--border-color); }
+        .title-group h1 { font-size: 1.25rem; color: var(--text-primary); line-height: 1.15; }
+        .header-subtitle { font-size: 0.74rem; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.4px; display: block; margin-top: 3px; }
+
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .btn-action, .theme-toggle-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-action:hover, .theme-toggle-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+        .btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-action.btn-primary-ricoh { background-color: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
+        .btn-action.btn-primary-ricoh:hover { background-color: var(--brand-primary-hover); color: #fff; }
+        .btn-action.btn-success-ricoh { background-color: #27ae60; color: #fff; border-color: #27ae60; }
+        .btn-action.btn-success-ricoh:hover { background-color: #219150; color: #fff; }
+
+        .ricoh-dropdown-wrapper { position: relative; display: inline-block; }
+        .ricoh-dropdown-menu { display: none; position: absolute; top: 115%; right: 0; width: 215px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1000; flex-direction: column; }
+        .ricoh-dropdown-menu.active { display: flex; }
+        .ricoh-dropdown-item { padding: 10px 14px; border: none; border-bottom: 1px solid var(--border-color); font-size: 0.84rem; font-weight: 600; color: var(--text-primary); background: transparent; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; }
+        .ricoh-dropdown-item:hover { background: var(--toggle-bg); color: var(--brand-primary); }
+
+        .notification-wrapper { position: relative; display: inline-block; }
+        .bell-badge { position: absolute; top: -5px; right: -5px; background-color: #e74c3c; color: #ffffff; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; border: 2px solid var(--card-bg); }
+        .notification-dropdown { display: none; position: absolute; top: 115%; right: 0; width: 320px; max-height: 420px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 1000; overflow: hidden; flex-direction: column; }
+        .notification-dropdown.active { display: flex; }
+        .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--toggle-bg); border-bottom: 1px solid var(--border-color); font-size: 0.85rem; font-weight: 700; }
+        .notification-list { overflow-y: auto; max-height: 350px; display: flex; flex-direction: column; }
+        .notification-item { padding: 10px 14px; border-bottom: 1px solid var(--border-color); font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .notification-item:hover { background: var(--toggle-bg); }
+        .notification-empty { padding: 25px; text-align: center; color: var(--text-secondary); font-size: 0.85rem; }
+
+        .metrics-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .metric-card { background: var(--card-bg); padding: 14px 18px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+        .metric-card.online { border-left: 5px solid var(--status-online); }
+        .metric-card.offline { border-left: 5px solid var(--status-offline); }
+        .metric-info .label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
+        .metric-info .value { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+        .metric-icon { font-size: 1.8rem; }
+        .metric-card.online .metric-icon { color: var(--status-online); }
+        .metric-card.offline .metric-icon { color: var(--status-offline); }
+
+        .plant-bar { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        .plant-group-left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .plant-badge-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .plant-badge-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+        .plant-badge-btn.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
+        .plant-badge-btn.active-clp-plant { background: var(--clp-orange); color: #fff; border-color: var(--clp-orange); }
+
+        .takt-widget {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1.5px solid rgba(214, 48, 49, 0.45);
+            padding: 6px 14px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(214, 48, 49, 0.08);
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .takt-widget i.bi-car-front-fill { color: var(--shijibira-red); font-size: 1.05rem; }
+        .takt-input {
+            width: 58px;
+            padding: 3px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--toggle-bg);
+            color: var(--shijibira-red);
+            font-weight: 900;
+            font-size: 0.88rem;
+            text-align: center;
+            outline: none;
+        }
+        .takt-input:focus { border-color: var(--shijibira-red); }
+
+        .controls-bar { background: var(--control-bg); padding: 12px 16px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); }
+        .brand-toggle-group { display: flex; background: var(--toggle-bg); padding: 4px; border-radius: 8px; gap: 4px; flex-wrap: wrap; align-items: center; }
+        .brand-btn { border: none; background: transparent; padding: 8px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+        .brand-btn:hover { color: var(--text-primary); }
+        .brand-btn.active { background: var(--card-bg); color: var(--brand-primary); box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+
+        .shijibira-btn { border: 1px solid rgba(214, 48, 49, 0.35); background: rgba(214, 48, 49, 0.08); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; color: var(--shijibira-red); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+        .shijibira-btn:hover { background: rgba(214, 48, 49, 0.16); }
+        .shijibira-btn.active { background: var(--shijibira-red); color: #ffffff; border-color: var(--shijibira-red); box-shadow: 0 2px 8px rgba(214, 48, 49, 0.35); }
+
+        .search-box { position: relative; flex: 1; min-width: 200px; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+        .search-box input { width: 100%; padding: 9px 10px 9px 38px; border: 1px solid var(--border-color); background-color: var(--card-bg); color: var(--text-primary); border-radius: 8px; font-size: 0.88rem; outline: none; }
+        .filter-status-select { padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.88rem; color: var(--text-primary); background-color: var(--card-bg); outline: none; cursor: pointer; }
+
+        .grid-impressoras { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 16px 14px; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; cursor: pointer; border: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
+
+        .card.ricoh-card { border-color: rgba(204, 0, 0, 0.35); border-left: 5px solid var(--brand-primary); }
+        .card.critica { border-color: rgba(214, 48, 49, 0.55); border-left: 5px solid var(--shijibira-red); }
+        .card.epson-card { border-color: rgba(0, 102, 128, 0.55); border-left: 5px solid var(--epson-teal); }
+        .card.zebra-card { border-color: rgba(17, 17, 17, 0.45); border-left: 5px solid var(--zebra-black); }
+        body.dark-mode .card.zebra-card { border-color: rgba(226, 232, 240, 0.4); border-left: 5px solid var(--zebra-black); }
+
+        .card.online:hover { transform: translateY(-3px); border-color: var(--status-online); }
+        .card.offline:hover { transform: translateY(-3px); border-color: var(--status-offline); }
+
+        .status-dots-container { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 6px; z-index: 5; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .status-dot.online { background-color: var(--status-online); box-shadow: 0 0 8px rgba(46, 204, 113, 0.7); }
+        .status-dot.offline { background-color: var(--status-offline); box-shadow: 0 0 8px rgba(231, 76, 60, 0.7); }
+        .paper-warning-dot { width: 12px; height: 12px; border-radius: 50%; background-color: var(--status-warning); box-shadow: 0 0 8px rgba(241, 196, 15, 0.8); display: inline-block; }
+
+        .badges-top-left { display: flex; gap: 5px; margin-bottom: 6px; flex-wrap: wrap; }
+        .critica-badge-top { background: var(--shijibira-red); color: #ffffff; font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.4px; display: inline-flex; align-items: center; gap: 4px; }
+        .epson-badge-top { background: var(--epson-teal); color: #ffffff; font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.4px; display: inline-flex; align-items: center; gap: 4px; }
+        .zebra-badge-top { background: #111111; color: #ffffff; font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.6px; display: inline-flex; align-items: center; gap: 4px; }
+        body.dark-mode .zebra-badge-top { background: #f1f5f9; color: #0f172a; }
+        .office-badge-top { background: rgba(9, 132, 227, 0.12); color: var(--office-blue); border: 1px solid rgba(9, 132, 227, 0.35); font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.4px; display: inline-flex; align-items: center; gap: 4px; }
+        .planta-badge-tag { background: var(--toggle-bg); color: var(--text-secondary); border: 1px solid var(--border-color); font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .planta-badge-tag.clp { color: var(--clp-orange); border-color: rgba(230, 126, 34, 0.4); }
+
+        .card-header-title { font-size: 1rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 8px; max-width: 82%; }
+        .card.epson-card .card-header-title { color: var(--epson-teal); }
+        body.dark-mode .card.epson-card .card-header-title { color: #38bdf8; }
+        .card.zebra-card .card-header-title { color: var(--text-primary); }
+
+        .card-info-list { font-size: 0.82rem; line-height: 1.45; color: var(--text-primary); margin-bottom: 8px; }
+        .card-info-list strong { color: var(--text-secondary); }
+        .ip-highlight { color: #3498db; font-weight: bold; }
+
+        .takt-autonomia-box {
+            margin-top: 8px;
+            padding: 7px 9px;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            line-height: 1.35;
+            border: 1px solid rgba(39, 174, 96, 0.35);
+            background: rgba(39, 174, 96, 0.08);
+            color: var(--text-primary);
+        }
+        .takt-autonomia-box.alerta-pacote {
+            border-color: rgba(230, 126, 34, 0.55);
+            background: rgba(230, 126, 34, 0.12);
+        }
+        .takt-autonomia-header { display: flex; align-items: center; justify-content: space-between; font-weight: 800; margin-bottom: 2px; }
+        .takt-autonomia-box .takt-ok-label { color: #27ae60; }
+        .takt-autonomia-box.alerta-pacote .takt-warn-label { color: #e67e22; }
+
+        .cmyk-single { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .analog-toner-container { padding: 6px 8px; background: var(--toggle-bg); border-radius: 8px; border: 1px solid var(--border-color); }
+        .analog-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; gap: 6px; }
+        .analog-bar-track { height: 8px; width: 100%; background: rgba(0, 0, 0, 0.12); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+        .analog-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+        .toner-fill-cyan { background-color: #0984e3 !important; }
+        .toner-text-cyan { color: #0984e3 !important; }
+        .toner-box-cyan { border-left: 4px solid #0984e3; }
+
+        .toner-fill-magenta { background-color: #e84393 !important; }
+        .toner-text-magenta { color: #e84393 !important; }
+        .toner-box-magenta { border-left: 4px solid #e84393; }
+
+        .toner-fill-yellow { background-color: #f1c40f !important; }
+        .toner-text-yellow { color: #d4a017 !important; }
+        body.dark-mode .toner-text-yellow { color: #f1c40f !important; }
+        .toner-box-yellow { border-left: 4px solid #f1c40f; }
+
+        .toner-fill-black { background-color: #2d3436 !important; }
+        .toner-text-black { color: #2d3436 !important; }
+        body.dark-mode .toner-fill-black { background-color: #95a5a6 !important; }
+        body.dark-mode .toner-text-black { color: #dfe6e9 !important; }
+        .toner-box-black { border-left: 4px solid #2d3436; }
+        body.dark-mode .toner-box-black { border-left: 4px solid #95a5a6; }
+
+        .toner-indisponivel { opacity: 0.45; }
+        .analog-toner-container.toner-critico { border-color: #e74c3c; background: rgba(231, 76, 60, 0.08); }
+        .analog-toner-container.toner-critico .analog-header span:last-child { color: #e74c3c; }
+
+        .no-results { grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem; }
+        #atualizacao { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
+        .modal-card { background: var(--card-bg); width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; border: 1px solid var(--border-color); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px; }
+        .modal-header h2 { font-size: 1.2rem; color: var(--text-primary); }
+        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); }
+
+        .bi-grid-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .bi-kpi-box { background: var(--report-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; }
+        .bi-kpi-label { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
+        .bi-kpi-val { font-size: 1.25rem; font-weight: 900; color: var(--text-primary); margin-top: 2px; }
+        .bi-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 8px; }
+        .bi-table th, .bi-table td { border-bottom: 1px solid var(--border-color); padding: 7px 8px; text-align: left; }
+        .bi-table th { background: var(--toggle-bg); font-weight: 800; color: var(--text-secondary); }
+
+        .checklist-toolbar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+        .btn-mini { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--toggle-bg); color: var(--text-primary); font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-mini:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+        .checklist-select-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .checklist-select-row:hover { background: var(--toggle-bg); }
+        .checklist-select-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--brand-primary); cursor: pointer; }
+
+        .abastecimento-item { padding: 14px 0; border-bottom: 1px solid var(--border-color); }
+        .abastecimento-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .checkbox-label { cursor: pointer; display: inline-block; user-select: none; }
+        .chk-abastecimento, .chk-modal-unico { display: none; }
+        .insumo-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 2px solid var(--border-color); background: var(--toggle-bg); color: var(--text-secondary); border-radius: 20px; font-size: 0.82rem; font-weight: 700; transition: all 0.2s ease; }
+        .insumo-badge:hover { border-color: var(--text-secondary); }
+
+        .chk-abastecimento:checked + .insumo-badge,
+        .chk-modal-unico:checked + .insumo-badge { background: #27ae60; color: #fff; border-color: #27ae60; box-shadow: 0 2px 8px rgba(39, 174, 96, 0.35); }
+
+        .insumo-badge.color-black { color: var(--text-primary); }
+        .chk-abastecimento:checked + .insumo-badge.color-black,
+        .chk-modal-unico:checked + .insumo-badge.color-black { background: #1e272e; border-color: #485460; color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); }
+
+        .insumo-badge.color-cyan { color: #0984e3; border-color: rgba(9, 132, 227, 0.4); }
+        .chk-abastecimento:checked + .insumo-badge.color-cyan,
+        .chk-modal-unico:checked + .insumo-badge.color-cyan { background: #0984e3; border-color: #0984e3; color: white; box-shadow: 0 2px 8px rgba(9, 132, 227, 0.4); }
+
+        .insumo-badge.color-magenta { color: #e84393; border-color: rgba(232, 67, 147, 0.4); }
+        .chk-abastecimento:checked + .insumo-badge.color-magenta,
+        .chk-modal-unico:checked + .insumo-badge.color-magenta { background: #e84393; border-color: #e84393; color: white; box-shadow: 0 2px 8px rgba(232, 67, 147, 0.4); }
+
+        .insumo-badge.color-yellow { color: #d4a017; border-color: rgba(241, 196, 15, 0.5); }
+        .chk-abastecimento:checked + .insumo-badge.color-yellow,
+        .chk-modal-unico:checked + .insumo-badge.color-yellow { background: #f1c40f; border-color: #f1c40f; color: #111; box-shadow: 0 2px 8px rgba(241, 196, 15, 0.4); }
+
+        .quick-supply-box { margin-top: 18px; padding-top: 15px; border-top: 2px dashed var(--border-color); background: var(--report-bg); padding: 15px; border-radius: 10px; }
+        .quick-supply-title { font-size: 0.92rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+        .alert-toast-container { position: fixed; bottom: 25px; right: 25px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; max-width: 350px; width: calc(100% - 40px); pointer-events: none; }
+        .postit-alert { pointer-events: auto; background: #fff9c4; color: #5d4037; border-left: 6px solid #fbc02d; padding: 14px 16px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); font-size: 0.88rem; transition: opacity 0.5s ease; }
+        .postit-alert.critical { background: #ffcdd2; color: #b71c1c; border-left-color: #d32f2f; }
+        .postit-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 5px; }
+        .postit-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: inherit; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <div class="prism-logo-container">
+                <img
+                    src="/static/prism-logo.jpeg"
+                    alt="Logotipo PRISM"
+                    class="prism-logo-img"
+                >
+                <div class="brand-text-group">
+                    <span class="brand-prism">PRISM</span>
+                    <span class="brand-sub">Printer &amp; Resource Intelligent Status Monitor</span>
+                </div>
+            </div>
+            <div class="header-divider"></div>
+            <div class="title-group">
+                <h1>Gestão Operacional de Ativos</h1>
+                <span class="header-subtitle">Monitoramento de Impressoras &amp; Recursos • ativos.xlsx</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="notification-wrapper">
+                <button class="btn-action" id="bellBtn" onclick="toggleNotificationMenu()">
+                    <i class="bi bi-bell-fill" style="color: #f39c12;"></i>
+                    <span class="bell-badge" id="bellBadge" style="display: none;">0</span>
+                </button>
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="notification-header">
+                        <span><i class="bi bi-bell"></i> Alertas Ativos</span>
+                    </div>
+                    <div class="notification-list" id="notificationList">
+                        <div class="notification-empty">Nenhum alerta pendente.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="atualizarAgora(this)">
+                <i class="bi bi-arrow-clockwise"></i> Atualizar Agora
+            </button>
+
+            <div class="ricoh-dropdown-wrapper">
+                <button class="btn-action btn-primary-ricoh" id="ricohMenuBtn" onclick="toggleRicohMenu()">
+                    <i class="bi bi-printer-fill"></i> Opções Ricoh <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+                </button>
+                <div class="ricoh-dropdown-menu" id="ricohDropdownMenu">
+                    <button class="ricoh-dropdown-item" onclick="executarAcaoRicoh(abrirModalChecklistRicoh)">
+                        <i class="bi bi-card-checklist" style="color: var(--brand-primary);"></i> Checklist Ricoh (PDF)
+                    </button>
+                    <button class="ricoh-dropdown-item" onclick="executarAcaoRicoh(abrirModalAbastecimento)">
+                        <i class="bi bi-box-seam-fill" style="color: var(--brand-primary);"></i> Troca de Insumos (Lote)
+                    </button>
+                    <button class="ricoh-dropdown-item" onclick="executarAcaoRicoh(gerarPDFDiario)">
+                        <i class="bi bi-file-earmark-pdf-fill" style="color: var(--brand-primary);"></i> PDF Geral Diário
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="abrirModalRelatorios()">
+                <i class="bi bi-file-earmark-bar-graph"></i> Histórico Insumos
+            </button>
+
+            <button class="btn-action" onclick="abrirModalBIContadores()">
+                <i class="bi bi-bar-chart-line-fill"></i> BI Contadores
+            </button>
+
+            <button class="theme-toggle-btn" onclick="toggleTheme()">
+                <i class="bi bi-moon-fill" id="themeIcon"></i>
+                <span id="themeLabel">Escuro</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="metrics-container">
+        <div class="metric-card online">
+            <div class="metric-info">
+                <span class="label">Online</span>
+                <div class="value" id="countOnline">0</div>
+            </div>
+            <i class="bi bi-check-circle-fill metric-icon"></i>
+        </div>
+        <div class="metric-card offline">
+            <div class="metric-info">
+                <span class="label">Offline</span>
+                <div class="value" id="countOffline">0</div>
+            </div>
+            <i class="bi bi-x-circle-fill metric-icon"></i>
+        </div>
+    </div>
+
+    <div class="plant-bar">
+        <div class="plant-group-left">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Planta:</span>
+            <button class="plant-badge-btn active" id="btnPlantaTodas" onclick="selecionarPlanta('todas')">Todas as Plantas</button>
+            <button class="plant-badge-btn" id="btnPlantaSor2" onclick="selecionarPlanta('sor2')">SOR2</button>
+            <button class="plant-badge-btn" id="btnPlantaClp" onclick="selecionarPlanta('clp')">CLP</button>
+        </div>
+
+        <div class="takt-widget" title="Previsão de autonomia aplicada exclusivamente às impressoras críticas Shijibira">
+            <i class="bi bi-car-front-fill"></i>
+            <span>TAKT de hoje:</span>
+            <input type="number" id="taktCarrosInput" class="takt-input" value="169" min="1" max="5000" oninput="atualizarTaktCarros()">
+            <span>carros</span>
+        </div>
+    </div>
+
+    <div class="controls-bar">
+        <div class="brand-toggle-group">
+            <button class="brand-btn active" id="btnMarcaTodas" onclick="selecionarMarca('todas')">Todas Marcas</button>
+            <button class="brand-btn" id="btnMarcaRicoh" onclick="selecionarMarca('ricoh')">Ricoh</button>
+            <button class="brand-btn" id="btnMarcaEpson" onclick="selecionarMarca('epson')">Epson</button>
+            <button class="brand-btn" id="btnMarcaZebra" onclick="selecionarMarca('zebra')">Zebra</button>
+        </div>
+
+        <button class="shijibira-btn" id="btnShijibira" onclick="toggleShijibira()">
+            <i class="bi bi-exclamation-triangle-fill"></i> Shijibira (Críticas)
+        </button>
+
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar por Marca, Modelo, IP, Série ou Local..." oninput="aplicarFiltros()">
+        </div>
+
+        <select id="filterStatus" class="filter-status-select" onchange="aplicarFiltros()">
+            <option value="todos">Todos os Status</option>
+            <option value="alertas_toner">🎨 Alertas de Toner</option>
+            <option value="controle_papel">📄 Sem / Pouco Papel</option>
+            <option value="online">Apenas Online</option>
+            <option value="offline">Apenas Offline</option>
+        </select>
+    </div>
+
+    <div style="margin-bottom: 12px; display: flex; justify-content: flex-end;">
+        <span id="atualizacao">A carregar dados...</span>
+    </div>
+
+    <div class="grid-impressoras" id="grid"></div>
+
+    <div id="pdfTemplate" style="display:none; padding: 20px; background: #fff; color: #111;"></div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i class="bi bi-info-circle"></i> Detalhes do Ativo</h2>
+                <button class="close-btn" onclick="fecharModal()">&times;</button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalChecklistPDF">
+        <div class="modal-card" style="max-width: 760px;">
+            <div class="modal-header">
+                <h2><i class="bi bi-card-checklist"></i> Selecionar Impressoras para Checklist PDF</h2>
+                <button class="close-btn" onclick="fecharModalChecklistPDF()">&times;</button>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <input type="text" id="filtroModalChecklist" placeholder="Filtrar por setor, IP, modelo, Shijibira ou Office..." oninput="filtrarListaChecklistPDF()" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: var(--card-bg); color: var(--text-primary); font-size: 0.88rem;">
+            </div>
+
+            <div class="checklist-toolbar">
+                <button type="button" class="btn-mini" onclick="selecionarChecklistGrupo('todas')"><i class="bi bi-check-all"></i> Marcar Todas</button>
+                <button type="button" class="btn-mini" onclick="selecionarChecklistGrupo('nenhuma')"><i class="bi bi-x-lg"></i> Desmarcar</button>
+                <button type="button" class="btn-mini" style="color: var(--shijibira-red);" onclick="selecionarChecklistGrupo('shijibira')"><i class="bi bi-exclamation-triangle-fill"></i> Apenas Shijibira</button>
+                <button type="button" class="btn-mini" style="color: var(--office-blue);" onclick="selecionarChecklistGrupo('office')"><i class="bi bi-building"></i> Apenas Office</button>
+                <button type="button" class="btn-mini" style="color: #e67e22;" onclick="selecionarChecklistGrupo('alerta')"><i class="bi bi-droplet-half"></i> Com Alerta</button>
+                <label style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+                    <input type="checkbox" id="chkIncluirTrocasNoPdf" checked style="accent-color: var(--brand-primary);"> Incluir Histórico de Trocas no PDF
+                </label>
+            </div>
+
+            <div id="checklistSelectList" style="max-height: 46vh; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 14px;"></div>
+
+            <button class="btn-action btn-primary-ricoh" style="width: 100%; padding: 12px; font-size: 0.92rem;" onclick="gerarPDFChecklistSelecionadas()">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Gerar PDF Checklist (<span id="countChecklistSelecionadas">0</span> selecionadas)
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalAbastecimento">
+        <div class="modal-card" style="max-width: 780px;">
+            <div class="modal-header">
+                <h2><i class="bi bi-box-seam-fill"></i> Registo de Insumos em Lote (Ricoh)</h2>
+                <button class="close-btn" onclick="fecharModalAbastecimento()">&times;</button>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); display: block; margin-bottom: 4px;">Técnico Responsável:</label>
+                    <input type="text" id="colaboradorNome" placeholder="Seu nome..." style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: var(--toggle-bg); color: var(--text-primary); font-size: 0.9rem;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); display: block; margin-bottom: 4px;">Filtrar Máquina:</label>
+                    <input type="text" id="filtroModalAbastecimento" placeholder="Filtrar setor ou IP..." oninput="filtrarListaAbastecimento()" style="width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: var(--card-bg); color: var(--text-primary); font-size: 0.9rem;">
+                </div>
+            </div>
+            <div class="abastecimento-list" id="abastecimentoList" style="max-height: 48vh; overflow-y: auto; margin-bottom: 15px;"></div>
+            <button class="btn-action btn-success-ricoh" id="btnSalvarLote" style="width: 100%; justify-content: center; padding: 12px;" onclick="salvarAbastecimentoLote()">
+                <i class="bi bi-check-circle-fill"></i> Confirmar Trocas &amp; Puxar Contadores
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalRelatorios">
+        <div class="modal-card" style="max-width: 760px;">
+            <div class="modal-header">
+                <h2><i class="bi bi-journal-text"></i> Histórico de Trocas &amp; Contadores</h2>
+                <button class="close-btn" onclick="fecharModalRelatorios()">&times;</button>
+            </div>
+            <div id="relatoriosContent" style="max-height: 65vh; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalBIContadores">
+        <div class="modal-card" style="max-width: 860px;">
+            <div class="modal-header">
+                <h2><i class="bi bi-bar-chart-line-fill"></i> BI de Contadores por Período &amp; Setor</h2>
+                <button class="close-btn" onclick="fecharModalBIContadores()">&times;</button>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; align-items: flex-end;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block;">Início</label>
+                    <input type="date" id="biDataInicio" style="padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-primary);">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block;">Fim</label>
+                    <input type="date" id="biDataFim" style="padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-primary);">
+                </div>
+                <div style="flex: 1; min-width: 160px;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block;">Setor</label>
+                    <input type="text" id="biSetorFiltro" placeholder="Ex: Estamparia, Montagem..." style="width: 100%; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-primary);">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block;">Marca</label>
+                    <select id="biMarcaFiltro" style="padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-primary);">
+                        <option value="todas">Todas</option>
+                        <option value="ricoh">Ricoh</option>
+                        <option value="epson">Epson</option>
+                        <option value="zebra">Zebra</option>
+                    </select>
+                </div>
+                <button class="btn-action btn-primary-ricoh" onclick="carregarBIContadores()">
+                    <i class="bi bi-funnel-fill"></i> Filtrar BI
+                </button>
+            </div>
+            <div id="biConteudo"></div>
+        </div>
+    </div>
+
+    <div class="alert-toast-container" id="alertToastContainer"></div>
+
+    <script>
+        let todasImpressoras = [];
+        let marcaSelecionada = 'todas';
+        let plantaSelecionada = 'todas';
+        let apenasShijibira = false;
+        let taktCarros = 169;
+        let listaAlertasAtivos = [];
+
+        const IPS_SHIJIBIRA = new Set([
+            '172.27.32.72', '172.27.32.75', '172.27.32.76', '172.27.32.77',
+            '172.27.32.74', '172.27.32.214', '172.27.32.209', '172.27.32.70',
+            '172.27.32.71', '172.27.32.73', '172.27.22.5', '172.27.40.68',
+            '172.27.32.220', '172.27.24.33', '172.27.32.219', '172.27.27.5',
+            '172.27.32.243'
+        ]);
+
+        const IPS_INSPECAO_CQ = new Set([
+            '172.27.32.214',
+            '172.27.32.209',
+            '172.27.32.243'
+        ]);
+
+        function isPlantaCLP(imp) {
+            return (imp.site && imp.site.toLowerCase().includes('clp')) ||
+                   (imp.local && imp.local.toLowerCase().includes('clp')) ||
+                   (imp.tipo && imp.tipo.toLowerCase() === 'clp');
+        }
+
+        function obterPlanta(imp) {
+            return isPlantaCLP(imp) ? 'clp' : 'sor2';
+        }
+
+        function obterMarcaReal(imp) {
+            const marcaTexto = `${imp.marca || ''} ${imp.tipo || ''}`.toLowerCase();
+            if (marcaTexto.includes('ricoh')) return 'ricoh';
+            if (marcaTexto.includes('epson')) return 'epson';
+            if (marcaTexto.includes('zebra')) return 'zebra';
+            return (imp.tipo || '').toLowerCase();
+        }
+
+        function isShijibira(imp) {
+            const ipLimpo = (imp.ip || '').trim();
+            return IPS_SHIJIBIRA.has(ipLimpo) || Boolean(imp.shijibira);
+        }
+
+        function obterDescricaoTipo(imp) {
+            const marca = obterMarcaReal(imp);
+            if (marca === 'epson') return 'EPSON';
+            if (marca === 'zebra') return 'ZEBRA';
+            return isShijibira(imp) ? 'SHIJIBIRA' : 'OFFICE';
+        }
+
+        function calcularPrevisaoTaktShijibira(imp) {
+            if (!isShijibira(imp) || obterMarcaReal(imp) !== 'ricoh') return null;
+
+            const ipLimpo = (imp.ip || '').trim();
+            const setorUpper = (imp.setor || '').toUpperCase();
+            const modeloUpper = (imp.modelo || '').toUpperCase();
+
+            const isInspecao = IPS_INSPECAO_CQ.has(ipLimpo) || setorUpper.includes('INSPEÇÃO') || setorUpper.includes('INSPECAO') || setorUpper.includes('CQ');
+            const folhasPorCarro = isInspecao ? 3 : 1;
+            const tipoPapel = modeloUpper.includes('8400') ? 'A3' : 'A4';
+            const capacidadePacote = 500;
+
+            const folhasNecessarias = taktCarros * folhasPorCarro;
+            const pacotesNecessarios = Math.max(1, Math.ceil(folhasNecessarias / capacidadePacote));
+            const umPacoteDaConta = folhasNecessarias <= capacidadePacote;
+
+            return {
+                isInspecao,
+                folhasPorCarro,
+                tipoPapel,
+                folhasNecessarias,
+                pacotesNecessarios,
+                umPacoteDaConta
+            };
+        }
+
+        function atualizarTaktCarros() {
+            const val = parseInt(document.getElementById('taktCarrosInput').value, 10);
+            taktCarros = (!isNaN(val) && val > 0) ? val : 169;
+            localStorage.setItem('takt_carros_hoje', taktCarros);
+            aplicarFiltros();
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateThemeUI(true);
+            }
+            const savedTech = localStorage.getItem('tecnico_nome');
+            if (savedTech && document.getElementById('colaboradorNome')) {
+                document.getElementById('colaboradorNome').value = savedTech;
+            }
+            const savedTakt = localStorage.getItem('takt_carros_hoje');
+            if (savedTakt) {
+                taktCarros = parseInt(savedTakt, 10) || 169;
+                document.getElementById('taktCarrosInput').value = taktCarros;
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeUI(isDark);
+        }
+
+        function updateThemeUI(isDark) {
+            document.getElementById('themeIcon').className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            document.getElementById('themeLabel').innerText = isDark ? 'Claro' : 'Escuro';
+        }
+
+        function toggleRicohMenu() { document.getElementById('ricohDropdownMenu').classList.toggle('active'); }
+        function executarAcaoRicoh(funcaoAcao) { document.getElementById('ricohDropdownMenu').classList.remove('active'); funcaoAcao(); }
+        function toggleNotificationMenu() { document.getElementById('notificationDropdown').classList.toggle('active'); }
+
+        async function buscarDados() {
+            try {
+                const response = await fetch('/api/status');
+                todasImpressoras = await response.json();
+                aplicarFiltros();
+                checarAlertasEpostit(todasImpressoras);
+                atualizarSininhoNotificacoes();
+                document.getElementById('atualizacao').innerText = 'Última atualização: ' + new Date().toLocaleTimeString('pt-BR');
+            } catch (err) {
+                console.error('Erro ao buscar status:', err);
+            }
+        }
+
+        function getAlertasVistos() {
+            try { return JSON.parse(localStorage.getItem('alertas_vistos') || '[]'); }
+            catch (e) { return []; }
+        }
+
+        function salvarAlertaVisto(idAlerta) {
+            let vistos = getAlertasVistos();
+            if (!vistos.includes(idAlerta)) {
+                vistos.push(idAlerta);
+                localStorage.setItem('alertas_vistos', JSON.stringify(vistos));
+            }
+        }
+
+        function checarAlertasEpostit(impressoras) {
+            const container = document.getElementById('alertToastContainer');
+            container.innerHTML = '';
+            listaAlertasAtivos = [];
+            const vistos = getAlertasVistos();
+
+            impressoras.forEach(imp => {
+                if (!imp.online) return;
+
+                if (imp.alerta_toner) {
+                    const idAlerta = `${imp.ip}_toner`;
+                    listaAlertasAtivos.push({ ip: imp.ip, setor: imp.setor, titulo: `Toner Alerta: ${imp.toner.replace(/ \| /g, ', ')}` });
+                    if (!vistos.includes(idAlerta)) {
+                        criarPostit(idAlerta, `⚠️ TONER CRÍTICO`, `A impressora <b>${imp.setor}</b> está com toner crítico!`, 'bi-droplet-half', 'critical');
+                        salvarAlertaVisto(idAlerta);
+                    }
+                }
+
+                if (imp.alerta_papel) {
+                    const idAlerta = `${imp.ip}_papel`;
+                    listaAlertasAtivos.push({ ip: imp.ip, setor: imp.setor, titulo: `Papel Alerta` });
+                    if (!vistos.includes(idAlerta)) {
+                        criarPostit(idAlerta, `📄 ALERTA DE PAPEL`, `A impressora <b>${imp.setor}</b> está com falta de papel.`, 'bi-file-earmark-x-fill', '');
+                        salvarAlertaVisto(idAlerta);
+                    }
+                }
+            });
+        }
+
+        function atualizarSininhoNotificacoes() {
+            const bellBadge = document.getElementById('bellBadge');
+            const listContainer = document.getElementById('notificationList');
+            const total = listaAlertasAtivos.length;
+
+            bellBadge.innerText = total;
+            bellBadge.style.display = total > 0 ? 'inline-block' : 'none';
+
+            if (total === 0) {
+                listContainer.innerHTML = '<div class="notification-empty">Nenhum alerta pendente.</div>';
+                return;
+            }
+
+            listContainer.innerHTML = '';
+            listaAlertasAtivos.forEach(alerta => {
+                const item = document.createElement('div');
+                item.className = 'notification-item';
+                item.onclick = () => abrirRelatorio(alerta.ip);
+                item.innerHTML = `<div><strong>${alerta.titulo}</strong><br><small>${alerta.setor} (${alerta.ip})</small></div>`;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function criarPostit(idAlerta, titulo, mensagem, icone, classeCss) {
+            const container = document.getElementById('alertToastContainer');
+            const postit = document.createElement('div');
+            postit.className = `postit-alert ${classeCss}`;
+            postit.innerHTML = `
+                <div class="postit-header">
+                    <span><i class="bi ${icone}"></i> ${titulo}</span>
+                    <button class="postit-close" onclick="dispensarPostit(this)">&times;</button>
+                </div>
+                <div>${mensagem}</div>
+            `;
+            container.appendChild(postit);
+
+            setTimeout(() => {
+                if (postit.parentElement) {
+                    postit.style.opacity = '0';
+                    setTimeout(() => postit.remove(), 500);
+                }
+            }, 15000);
+        }
+
+        function dispensarPostit(btn) {
+            const postit = btn.closest('.postit-alert');
+            postit.style.opacity = '0';
+            setTimeout(() => postit.remove(), 500);
+        }
+
+        function selecionarPlanta(planta) {
+            plantaSelecionada = planta;
+            document.querySelectorAll('.plant-badge-btn').forEach(btn => btn.classList.remove('active', 'active-clp-plant'));
+            if (planta === 'todas') document.getElementById('btnPlantaTodas').classList.add('active');
+            else if (planta === 'sor2') document.getElementById('btnPlantaSor2').classList.add('active');
+            else if (planta === 'clp') document.getElementById('btnPlantaClp').classList.add('active-clp-plant');
+
+            aplicarFiltros();
+        }
+
+        function selecionarMarca(marca) {
+            marcaSelecionada = marca;
+            document.querySelectorAll('.brand-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btnMarca${marca.charAt(0).toUpperCase() + marca.slice(1)}`).classList.add('active');
+
+            aplicarFiltros();
+        }
+
+        function toggleShijibira() {
+            apenasShijibira = !apenasShijibira;
+            const btn = document.getElementById('btnShijibira');
+            btn.classList.toggle('active', apenasShijibira);
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const busca = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFiltro = document.getElementById('filterStatus').value;
+
+            const impressorasFiltradas = todasImpressoras.filter(imp => {
+                const plantaAtivo = obterPlanta(imp);
+                const batePlanta = (plantaSelecionada === 'todas') || (plantaAtivo === plantaSelecionada);
+
+                const marcaAtivo = obterMarcaReal(imp);
+                const bateMarca = (marcaSelecionada === 'todas') || (marcaAtivo === marcaSelecionada);
+
+                const bateShijibira = !apenasShijibira || isShijibira(imp);
+                const descTipo = obterDescricaoTipo(imp).toLowerCase();
+
+                const textoCorrido = `${imp.setor} ${imp.marca} ${imp.modelo} ${imp.numero_serie} ${imp.ip} ${imp.imp} ${imp.site} ${descTipo}`.toLowerCase();
+                const bateTexto = textoCorrido.includes(busca);
+
+                let bateStatus = true;
+                if (statusFiltro === 'alertas_toner') bateStatus = imp.alerta_toner;
+                else if (statusFiltro === 'controle_papel') bateStatus = imp.alerta_papel;
+                else if (statusFiltro === 'online') bateStatus = imp.online;
+                else if (statusFiltro === 'offline') bateStatus = !imp.online;
+
+                return batePlanta && bateMarca && bateShijibira && bateTexto && bateStatus;
+            });
+
+            const basePlanta = todasImpressoras.filter(i => plantaSelecionada === 'todas' || obterPlanta(i) === plantaSelecionada);
+            document.getElementById('countOnline').innerText = basePlanta.filter(i => i.online).length;
+            document.getElementById('countOffline').innerText = basePlanta.filter(i => !i.online).length;
+
+            renderizarGrid(impressorasFiltradas);
+        }
+
+        async function atualizarAgora(btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Coletando...';
+            try {
+                await fetch('/api/atualizar', { method: 'POST' });
+                await buscarDados();
+            } catch (e) { alert('Erro ao atualizar.'); }
+            finally { btn.disabled = false; btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Atualizar Agora'; }
+        }
+
+        function renderizarGrid(lista) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+
+            if (lista.length === 0) {
+                grid.innerHTML = '<div class="no-results">Nenhum equipamento encontrado com os filtros selecionados.</div>';
+                return;
+            }
+
+            lista.forEach(imp => {
+                const descTipo = obterDescricaoTipo(imp);
+                const shijibiraFlag = descTipo === 'SHIJIBIRA';
+                const epsonFlag = descTipo === 'EPSON';
+                const zebraFlag = descTipo === 'ZEBRA';
+                const plantaAtivo = obterPlanta(imp);
+                const marcaReal = obterMarcaReal(imp);
+                const previsaoTakt = calcularPrevisaoTaktShijibira(imp);
+
+                let classeCardTipo = '';
+                if (zebraFlag) classeCardTipo = 'zebra-card';
+                else if (epsonFlag) classeCardTipo = 'epson-card';
+                else if (imp.critica || shijibiraFlag) classeCardTipo = 'critica';
+                else if (marcaReal === 'ricoh') classeCardTipo = 'ricoh-card';
+
+                const card = document.createElement('div');
+                card.className = `card ${imp.online ? 'online' : 'offline'} ${classeCardTipo}`;
+                card.onclick = () => abrirRelatorio(imp.ip);
+
+                const dotAmarelo = imp.alerta_papel ? `<span class="paper-warning-dot" title="Alerta de Papel"></span>` : '';
+
+                const badgePlanta = `<span class="planta-badge-tag ${plantaAtivo === 'clp' ? 'clp' : ''}">${plantaAtivo.toUpperCase()}</span>`;
+                let badgeTipo = `<span class="office-badge-top">OFFICE</span>`;
+                if (shijibiraFlag) {
+                    badgeTipo = `<span class="critica-badge-top"><i class="bi bi-exclamation-triangle-fill"></i> SHIJIBIRA</span>`;
+                } else if (epsonFlag) {
+                    badgeTipo = `<span class="epson-badge-top"><i class="bi bi-exclamation-circle-fill"></i> EPSON</span>`;
+                } else if (zebraFlag) {
+                    badgeTipo = `<span class="zebra-badge-top"><i class="bi bi-upc-scan"></i> ZEBRA</span>`;
+                }
+
+                let htmlAutonomiaTakt = '';
+                if (previsaoTakt) {
+                    const classeAlerta = previsaoTakt.umPacoteDaConta ? '' : 'alerta-pacote';
+                    const resumoPacote = previsaoTakt.umPacoteDaConta
+                        ? `<span class="takt-ok-label"><i class="bi bi-check-circle-fill"></i> 1 pct ${previsaoTakt.tipoPapel} dá conta</span>`
+                        : `<span class="takt-warn-label"><i class="bi bi-exclamation-circle-fill"></i> ${previsaoTakt.pacotesNecessarios} pcts ${previsaoTakt.tipoPapel} (+500 fls)</span>`;
+
+                    htmlAutonomiaTakt = `
+                        <div class="takt-autonomia-box ${classeAlerta}">
+                            <div class="takt-autonomia-header">
+                                <span><i class="bi bi-car-front-fill"></i> ${previsaoTakt.isInspecao ? 'Inspeção (3 fls/carro)' : 'Montagem (1 fl/carro)'}</span>
+                                <span>${previsaoTakt.folhasNecessarias} fls</span>
+                            </div>
+                            <div>${resumoPacote} p/ ${taktCarros} carros</div>
+                        </div>
+                    `;
+                }
+
+                let htmlBarraToner = '';
+
+                if (marcaReal === 'ricoh' && imp.online && imp.toner) {
+                    const tonerParts = imp.toner.split(' | ').filter(t => t.trim() !== '');
+                    htmlBarraToner = `<div class="cmyk-single">`;
+
+                    tonerParts.forEach(t => {
+                        let pct = 100;
+                        let classeFill = '';
+                        let classeText = '';
+                        let classeBox = '';
+                        let isCritico = false;
+                        let isIndisponivel = false;
+                        const tLower = t.toLowerCase();
+                        const matchNum = t.match(/(\d+)\s*%/);
+
+                        if (tLower.includes('ciano') || tLower.includes('cyan') || tLower.startsWith('c:')) {
+                            classeFill = 'toner-fill-cyan';
+                            classeText = 'toner-text-cyan';
+                            classeBox = 'toner-box-cyan';
+                        } else if (tLower.includes('magenta') || tLower.startsWith('m:')) {
+                            classeFill = 'toner-fill-magenta';
+                            classeText = 'toner-text-magenta';
+                            classeBox = 'toner-box-magenta';
+                        } else if (tLower.includes('amarelo') || tLower.includes('yellow') || tLower.startsWith('y:')) {
+                            classeFill = 'toner-fill-yellow';
+                            classeText = 'toner-text-yellow';
+                            classeBox = 'toner-box-yellow';
+                        } else if (tLower.includes('preto') || tLower.includes('black') || tLower.startsWith('k:')) {
+                            classeFill = 'toner-fill-black';
+                            classeText = 'toner-text-black';
+                            classeBox = 'toner-box-black';
+                        }
+
+                        let corFallback = '#27ae60';
+                        if (tLower.includes('indisponível') || tLower.includes('indisponivel')) {
+                            pct = 100;
+                            isIndisponivel = true;
+                            if (!classeFill) corFallback = '#95a5a6';
+                        } else if (matchNum) {
+                            pct = parseInt(matchNum[1], 10);
+                            if (pct === 0) { pct = 5; isCritico = true; }
+                            else if (pct <= 25) { isCritico = true; }
+                            else if (pct <= 50 && !classeFill) { corFallback = '#f39c12'; }
+                        } else if (tLower.includes('esgotado')) {
+                            pct = 5; isCritico = true;
+                        } else if (tLower.includes('quase')) {
+                            pct = 15; isCritico = true;
+                        }
+
+                        let [nomeCor, valorCor] = t.includes(':') ? t.split(':') : ['Toner', t];
+                        const textoValor = valorCor ? valorCor.trim() : '';
+
+                        htmlBarraToner += `
+                            <div class="analog-toner-container ${classeBox} ${isCritico ? 'toner-critico' : ''}">
+                                <div class="analog-header">
+                                    <span class="${classeText}">${nomeCor.trim()}</span>
+                                    <span>${isCritico ? '⚠️ ' : ''}${textoValor}</span>
+                                </div>
+                                <div class="analog-bar-track">
+                                    <div class="analog-bar-fill ${classeFill} ${isIndisponivel ? 'toner-indisponivel' : ''}" style="width: ${pct}%; ${!classeFill ? `background: ${corFallback};` : ''}"></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    htmlBarraToner += '</div>';
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="badges-top-left">
+                            ${badgePlanta}
+                            ${badgeTipo}
+                        </div>
+                        <div class="status-dots-container">
+                            ${dotAmarelo}
+                            <span class="status-dot ${imp.online ? 'online' : 'offline'}" title="${imp.online ? 'Online' : 'Offline'}"></span>
+                        </div>
+
+                        <div class="card-header-title">${imp.setor}</div>
+
+                        <div class="card-info-list">
+                            <p><strong>IP:</strong> <span class="ip-highlight">${imp.ip}</span></p>
+                            <p><strong>Marca/Modelo:</strong> ${imp.marca} ${imp.modelo}</p>
+                            <p><strong>Nº Série:</strong> ${imp.numero_serie ? imp.numero_serie : 'N/A'}</p>
+                            <p><strong>IMP / Site:</strong> ${imp.imp} | ${imp.site || plantaAtivo.toUpperCase()}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        ${htmlBarraToner}
+                        ${htmlAutonomiaTakt}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function gerarChipsHTML(imp, classeCheckbox) {
+            const mod = (imp.modelo || '').toLowerCase();
+            const loc = (imp.setor || '').toLowerCase();
+            const tonerStr = (imp.toner || '').toLowerCase();
+
+            const isPlotter = mod.includes('cw220') || mod.includes('plotter') || mod.includes('ploter') || loc.includes('plotter') || loc.includes('ploter');
+            const isP502 = mod.includes('p502') || mod.includes('p 502');
+            const isPro8300 = mod.includes('8300');
+            const isColor = isPlotter || loc.includes('color') || /c\d{3,4}/.test(mod) || tonerStr.includes('ciano');
+
+            let chips = '';
+
+            if (isPro8300) {
+                chips += `
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Preto 1" class="${classeCheckbox}"><span class="insumo-badge color-black">+ Preto 1</span></label>
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Preto 2" class="${classeCheckbox}"><span class="insumo-badge color-black">+ Preto 2</span></label>
+                `;
+            } else if (isColor) {
+                chips += `
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Ciano" class="${classeCheckbox}"><span class="insumo-badge color-cyan">+ Ciano</span></label>
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Magenta" class="${classeCheckbox}"><span class="insumo-badge color-magenta">+ Magenta</span></label>
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Amarelo" class="${classeCheckbox}"><span class="insumo-badge color-yellow">+ Amarelo</span></label>
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Preto" class="${classeCheckbox}"><span class="insumo-badge color-black">+ Preto</span></label>
+                `;
+            } else {
+                chips += `
+                    <label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Toner Preto" class="${classeCheckbox}"><span class="insumo-badge color-black">+ Toner Preto</span></label>
+                `;
+            }
+
+            if (isPlotter) {
+                chips += `<label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Bobina A0" class="${classeCheckbox}"><span class="insumo-badge">+ Bobina A0</span></label>`;
+            } else if (isP502) {
+                chips += `<label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Papel A4" class="${classeCheckbox}"><span class="insumo-badge">+ Papel A4</span></label>`;
+            } else {
+                chips += `<label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Papel A4" class="${classeCheckbox}"><span class="insumo-badge">+ Papel A4</span></label>`;
+                chips += `<label class="checkbox-label"><input type="checkbox" data-ip="${imp.ip}" data-setor="${imp.setor}" data-modelo="${imp.modelo}" data-serie="${imp.numero_serie}" data-tipo="${imp.tipo}" data-contador="${imp.contador_total}" data-insumo="Papel A3" class="${classeCheckbox}"><span class="insumo-badge">+ Papel A3</span></label>`;
+            }
+
+            return chips;
+        }
+
+        async function abrirRelatorio(ip) {
+            const overlay = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            content.innerHTML = '<p>A carregar...</p>';
+            overlay.style.display = 'flex';
+
+            try {
+                const res = await fetch(`/api/detalhes/${ip}`);
+                const d = await res.json();
+
+                let htmlRicoh = '';
+                let htmlTrocaRapida = '';
+                let htmlTaktModal = '';
+
+                const previsaoTakt = calcularPrevisaoTaktShijibira(d);
+                if (previsaoTakt) {
+                    htmlTaktModal = `
+                        <div class="takt-autonomia-box ${previsaoTakt.umPacoteDaConta ? '' : 'alerta-pacote'}" style="margin: 10px 0; font-size: 0.85rem;">
+                            <div class="takt-autonomia-header">
+                                <span><i class="bi bi-car-front-fill"></i> Previsão TAKT (${taktCarros} carros)</span>
+                                <span>${previsaoTakt.folhasPorCarro} folha(s)/carro</span>
+                            </div>
+                            <p>Consumo previsto do turno: <strong>${previsaoTakt.folhasNecessarias} folhas ${previsaoTakt.tipoPapel}</strong> (${previsaoTakt.isInspecao ? 'Inspeção / CQ' : 'Linha de Montagem'}).</p>
+                            <p>${previsaoTakt.umPacoteDaConta
+                                ? `<span class="takt-ok-label"><i class="bi bi-check-circle-fill"></i> 1 pacote de ${previsaoTakt.tipoPapel} (500 fls) cobre o turno completo (sobram ~${500 - previsaoTakt.folhasNecessarias} fls).</span>`
+                                : `<span class="takt-warn-label"><i class="bi bi-exclamation-circle-fill"></i> Atenção: 1 pacote não cobre! Necessário <strong>${previsaoTakt.pacotesNecessarios} pacotes de ${previsaoTakt.tipoPapel}</strong>.</span>`
+                            }</p>
+                        </div>
+                    `;
+                }
+
+                const descTipo = obterDescricaoTipo(d);
+
+                if (obterMarcaReal(d) === 'ricoh') {
+                    let contadorTexto = 'Indisponível';
+                    if (d.contador_total !== null && d.contador_total !== 'N/A' && d.contador_total !== 'Indisponível') {
+                        contadorTexto = Number(d.contador_total).toLocaleString('pt-BR');
+                        if (d.contador_data) {
+                            contadorTexto += ` <small style="color:var(--text-secondary);">(Coletado em: ${d.contador_data})</small>`;
+                        }
+                    } else if (d.contador_erro) {
+                        contadorTexto = `Indisponível <small style="color:var(--status-offline);">(${d.contador_erro})</small>`;
+                    }
+                    htmlRicoh = `<p><strong>Contador Total (Páginas):</strong> <span id="modalContadorValor">${contadorTexto}</span></p>`;
+
+                    const tecnicoSalvo = localStorage.getItem('tecnico_nome') || '';
+                    htmlTrocaRapida = `
+                        <div class="quick-supply-box">
+                            <div class="quick-supply-title"><i class="bi bi-arrow-repeat"></i> Registrar Troca &amp; Puxar Contador Agora</div>
+                            <div style="margin-bottom: 10px;">
+                                <input type="text" id="tecnicoModalUnico" value="${tecnicoSalvo}" placeholder="Nome do técnico..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: var(--card-bg); color: var(--text-primary); font-size: 0.85rem;">
+                            </div>
+                            <div class="abastecimento-options" style="margin-bottom: 14px;">
+                                ${gerarChipsHTML(d, 'chk-modal-unico')}
+                            </div>
+                            <button class="btn-action btn-success-ricoh" id="btnSalvarUnico" style="width: 100%; padding: 10px;" onclick="salvarAbastecimentoUnico('${d.ip}', '${d.setor}', '${d.modelo}', '${d.numero_serie}', '${d.tipo}', '${d.contador_total}', '${descTipo}')">
+                                <i class="bi bi-check2-circle"></i> Confirmar Troca &amp; Puxar Contador
+                            </button>
+                        </div>
+                    `;
+                }
+
+                let badgeStyle = 'background:var(--office-blue); color:#fff;';
+                if (descTipo === 'SHIJIBIRA') badgeStyle = 'background:var(--shijibira-red); color:#fff;';
+                else if (descTipo === 'EPSON') badgeStyle = 'background:var(--epson-teal); color:#fff;';
+                else if (descTipo === 'ZEBRA') badgeStyle = 'background:#111; color:#fff; border:1px solid #fff;';
+
+                const descTipoBadge = `<span style="${badgeStyle} padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:800; margin-left:6px;">${descTipo === 'ZEBRA' ? '<i class="bi bi-upc-scan"></i> ZEBRA' : descTipo}</span>`;
+
+                content.innerHTML = `
+                    <div style="font-size:0.9rem; line-height:1.6;">
+                        <p><strong>Local / Setor:</strong> ${d.setor} ${descTipoBadge}</p>
+                        <p><strong>Planta:</strong> ${obterPlanta(d).toUpperCase()}</p>
+                        <p><strong>Endereço IP:</strong> ${d.ip}</p>
+                        <p><strong>Marca / Modelo:</strong> ${d.marca} ${d.modelo} ${d.versao ? `(${d.versao})` : ''}</p>
+                        <p><strong>Nº de Série:</strong> ${d.numero_serie || 'N/A'}</p>
+                        <p><strong>Código IMP / Site:</strong> ${d.imp} | ${d.site}</p>
+                        <p><strong>Status Conexão:</strong> <span style="color:${d.online ? 'var(--status-online)' : 'var(--status-offline)'}; font-weight:bold;">${d.online ? 'ONLINE' : 'OFFLINE'}</span></p>
+                        ${obterMarcaReal(d) === 'ricoh' ? `<p><strong>Níveis de Toner:</strong><br>${d.toner ? d.toner.replace(/ \| /g, '<br>') : 'Indisponível'}</p>` : ''}
+                        ${htmlRicoh}
+                        ${htmlTaktModal}
+                        ${htmlTrocaRapida}
+                    </div>
+                `;
+            } catch (err) {
+                content.innerHTML = '<p>Erro ao carregar detalhes.</p>';
+            }
+        }
+
+        async function salvarAbastecimentoUnico(ip, setor, modelo, serie, tipo, contadorAtual, descTipo) {
+            const tecnico = document.getElementById('tecnicoModalUnico').value.trim();
+            if (!tecnico) { alert('Digite o nome do técnico!'); return; }
+            localStorage.setItem('tecnico_nome', tecnico);
+
+            const chks = document.querySelectorAll('.chk-modal-unico:checked');
+            if (chks.length === 0) { alert('Selecione ao menos um toner ou papel trocado.'); return; }
+
+            const insumos = Array.from(chks).map(c => c.dataset.insumo);
+            const btn = document.getElementById('btnSalvarUnico');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Puxando contador e níveis...';
+
+            try {
+                const res = await fetch('/api/abastecimento', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ip, setor, modelo, serie, tipo,
+                        contador_atual: contadorAtual,
+                        descricao_tipo: descTipo,
+                        insumos,
+                        tecnico
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'sucesso') {
+                    const temAntValido = data.contador_anterior !== null && data.contador_anterior !== undefined && data.contador_anterior !== '' && data.contador_anterior !== 'N/A' && data.contador_anterior !== 'Indisponível' && !isNaN(Number(data.contador_anterior));
+                    const temAtuValido = data.contador_coletado !== null && data.contador_coletado !== undefined && data.contador_coletado !== '' && data.contador_coletado !== 'N/A' && data.contador_coletado !== 'Indisponível' && !isNaN(Number(data.contador_coletado));
+
+                    const contAntFmt = temAntValido ? Number(data.contador_anterior).toLocaleString('pt-BR') : 'Indisponível';
+                    const contAtualFmt = temAtuValido ? Number(data.contador_coletado).toLocaleString('pt-BR') : 'Indisponível';
+                    const deltaTxt = data.delta_paginas !== null && data.delta_paginas !== undefined ? `\nPáginas rodadas (Δ): +${Number(data.delta_paginas).toLocaleString('pt-BR')} págs` : '';
+
+                    document.getElementById('modalContadorValor').innerHTML = `${contAtualFmt} <small style="color:${temAtuValido ? '#27ae60' : '#e67e22'}; font-weight:bold;">(Atualizado agora!)</small>`;
+                    alert(`Troca registrada (${descTipo})!\nInsumos: ${insumos.join(', ')}\nContador Anterior: ${contAntFmt}\nContador Atual: ${contAtualFmt}${deltaTxt}\nNível Toner: ${data.toner_nivel}`);
+                    chks.forEach(c => c.checked = false);
+                    buscarDados();
+                }
+            } catch (e) {
+                alert('Erro ao comunicar com o servidor.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-check2-circle"></i> Confirmar Troca & Puxar Contador';
+            }
+        }
+
+        function fecharModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+        function fecharModalAbastecimento() { document.getElementById('modalAbastecimento').style.display = 'none'; }
+        function fecharModalRelatorios() { document.getElementById('modalRelatorios').style.display = 'none'; }
+        function fecharModalChecklistPDF() { document.getElementById('modalChecklistPDF').style.display = 'none'; }
+        function fecharModalBIContadores() { document.getElementById('modalBIContadores').style.display = 'none'; }
+
+        function abrirModalBIContadores() {
+            document.getElementById('modalBIContadores').style.display = 'flex';
+            carregarBIContadores();
+        }
+
+        async function carregarBIContadores() {
+            const container = document.getElementById('biConteudo');
+            container.innerHTML = '<p>Carregando BI de contadores...</p>';
+
+            const params = new URLSearchParams();
+            const dIni = document.getElementById('biDataInicio').value;
+            const dFim = document.getElementById('biDataFim').value;
+            const setor = document.getElementById('biSetorFiltro').value.trim();
+            const marca = document.getElementById('biMarcaFiltro').value;
+
+            if (dIni) params.set('data_inicio', dIni);
+            if (dFim) params.set('data_fim', dFim);
+            if (setor) params.set('setor', setor);
+            if (marca && marca !== 'todas') params.set('marca', marca);
+            if (plantaSelecionada && plantaSelecionada !== 'todas') params.set('planta', plantaSelecionada);
+
+            try {
+                const res = await fetch(`/api/relatorio-contadores?${params.toString()}`);
+                const data = await res.json();
+                const kpis = data.kpis || {};
+                const porSetor = data.por_setor || [];
+                const detalhes = data.detalhes || [];
+
+                container.innerHTML = `
+                    <div class="bi-grid-kpis">
+                        <div class="bi-kpi-box">
+                            <div class="bi-kpi-label">Páginas no Período</div>
+                            <div class="bi-kpi-val">${Number(kpis.total_paginas_periodo || 0).toLocaleString('pt-BR')}</div>
+                        </div>
+                        <div class="bi-kpi-box">
+                            <div class="bi-kpi-label">Equipamentos Avaliados</div>
+                            <div class="bi-kpi-val">${kpis.equipamentos_avaliados || 0}</div>
+                        </div>
+                        <div class="bi-kpi-box">
+                            <div class="bi-kpi-label">Média / Equipamento</div>
+                            <div class="bi-kpi-val">${Number(kpis.media_por_equipamento || 0).toLocaleString('pt-BR')}</div>
+                        </div>
+                        <div class="bi-kpi-box">
+                            <div class="bi-kpi-label">Maior Volume (Setor)</div>
+                            <div class="bi-kpi-val" style="font-size:1rem;">${kpis.setor_maior_volume || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size:0.95rem; margin: 10px 0 6px;">Volume por Setor</h3>
+                    <table class="bi-table">
+                        <thead>
+                            <tr><th>Setor</th><th>Ativos</th><th>Páginas (Período)</th><th>Contador Acumulado</th></tr>
+                        </thead>
+                        <tbody>
+                            ${porSetor.length ? porSetor.map(s => `
+                                <tr>
+                                    <td><strong>${s.setor}</strong></td>
+                                    <td>${s.equipamentos}</td>
+                                    <td><strong>${Number(s.paginas_periodo || 0).toLocaleString('pt-BR')}</strong></td>
+                                    <td>${Number(s.contador_acumulado || 0).toLocaleString('pt-BR')}</td>
+                                </tr>
+                            `).join('') : '<tr><td colspan="4">Sem leituras no filtro selecionado.</td></tr>'}
+                        </tbody>
+                    </table>
+
+                    <h3 style="font-size:0.95rem; margin: 14px 0 6px;">Detalhe por Equipamento</h3>
+                    <table class="bi-table">
+                        <thead>
+                            <tr><th>Setor / IP</th><th>Modelo</th><th>Inicial</th><th>Final</th><th>Páginas (Δ)</th><th>Última Coleta</th></tr>
+                        </thead>
+                        <tbody>
+                            ${detalhes.length ? detalhes.map(d => `
+                                <tr>
+                                    <td><strong>${d.setor}</strong><br><small>${d.ip}</small></td>
+                                    <td>${d.modelo || '-'}</td>
+                                    <td>${Number(d.contador_inicial || 0).toLocaleString('pt-BR')}</td>
+                                    <td><strong>${Number(d.contador_final || 0).toLocaleString('pt-BR')}</strong></td>
+                                    <td style="color:#27ae60; font-weight:800;">+${Number(d.paginas_periodo || 0).toLocaleString('pt-BR')}</td>
+                                    <td><small>${d.ultima_coleta || '-'}</small></td>
+                                </tr>
+                            `).join('') : '<tr><td colspan="6">Nenhum registro encontrado.</td></tr>'}
+                        </tbody>
+                    </table>
+                `;
+            } catch (e) {
+                container.innerHTML = '<p>Erro ao carregar dados do BI.</p>';
+            }
+        }
+
+        function abrirModalAbastecimento() {
+            const listContainer = document.getElementById('abastecimentoList');
+            const ricohs = todasImpressoras.filter(i => obterMarcaReal(i) === 'ricoh');
+
+            listContainer.innerHTML = ricohs.map(i => `
+                <div class="abastecimento-item" data-search="${(i.setor + ' ' + i.ip + ' ' + i.modelo).toLowerCase()}">
+                    <strong>${i.setor}</strong> <small style="color:var(--text-secondary);">(${i.ip}) - ${i.modelo} [${obterDescricaoTipo(i)}]</small>
+                    <div class="abastecimento-options">
+                        ${gerarChipsHTML(i, 'chk-abastecimento')}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('filtroModalAbastecimento').value = '';
+            document.getElementById('modalAbastecimento').style.display = 'flex';
+        }
+
+        function filtrarListaAbastecimento() {
+            const termo = document.getElementById('filtroModalAbastecimento').value.toLowerCase().trim();
+            document.querySelectorAll('.abastecimento-item').forEach(el => {
+                el.style.display = el.dataset.search.includes(termo) ? 'block' : 'none';
+            });
+        }
+
+        async function salvarAbastecimentoLote() {
+            const nome = document.getElementById('colaboradorNome').value.trim();
+            if (!nome) { alert('Digite seu nome!'); return; }
+            localStorage.setItem('tecnico_nome', nome);
+
+            const chks = document.querySelectorAll('.chk-abastecimento:checked');
+            if (chks.length === 0) { alert('Selecione ao menos um insumo.'); return; }
+
+            const btn = document.getElementById('btnSalvarLote');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Coletando contadores e níveis...';
+
+            const maquinasMap = {};
+            chks.forEach(c => {
+                const ip = c.dataset.ip;
+                const impObj = todasImpressoras.find(x => x.ip === ip);
+                if (!maquinasMap[ip]) {
+                    maquinasMap[ip] = {
+                        ip: ip,
+                        setor: c.dataset.setor,
+                        modelo: c.dataset.modelo,
+                        serie: c.dataset.serie,
+                        tipo: c.dataset.tipo,
+                        contador_atual: c.dataset.contador,
+                        descricao_tipo: impObj ? obterDescricaoTipo(impObj) : 'OFFICE',
+                        insumos: [],
+                        tecnico: nome
+                    };
+                }
+                maquinasMap[ip].insumos.push(c.dataset.insumo);
+            });
+
+            try {
+                const requisicoes = Object.values(maquinasMap).map(payload =>
+                    fetch('/api/abastecimento', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    })
+                );
+                await Promise.all(requisicoes);
+                alert(`Sucesso! ${Object.keys(maquinasMap).length} equipamento(s) atualizado(s) com contador anterior, atual e níveis.`);
+                fecharModalAbastecimento();
+                buscarDados();
+            } catch (e) {
+                alert('Erro ao salvar trocas em lote.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Confirmar Trocas & Puxar Contadores';
+            }
+        }
+
+        async function abrirModalRelatorios() {
+            const container = document.getElementById('relatoriosContent');
+            container.innerHTML = '<p>Carregando histórico...</p>';
+            document.getElementById('modalRelatorios').style.display = 'flex';
+
+            try {
+                const res = await fetch('/api/abastecimentos');
+                const dados = await res.json();
+
+                if (!dados || dados.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-secondary);">Nenhuma troca registrada ainda.</p>';
+                    return;
+                }
+
+                container.innerHTML = dados.map(item => {
+                    const insumos = item.insumos_trocados ? item.insumos_trocados.join(', ') : '-';
+                    const contAnt = item.contador_anterior !== undefined && item.contador_anterior !== 'N/A' && !isNaN(item.contador_anterior)
+                        ? Number(item.contador_anterior).toLocaleString('pt-BR')
+                        : (item.contador_anterior || 'N/A');
+                    const contAtual = (item.contador_atual ?? item.contador_momento) !== undefined && (item.contador_atual ?? item.contador_momento) !== 'N/A' && !isNaN(item.contador_atual ?? item.contador_momento)
+                        ? Number(item.contador_atual ?? item.contador_momento).toLocaleString('pt-BR')
+                        : (item.contador_atual ?? item.contador_momento ?? 'N/A');
+                    const delta = item.delta_paginas !== null && item.delta_paginas !== undefined
+                        ? ` <span style="color:#27ae60; font-weight:800;">(+${Number(item.delta_paginas).toLocaleString('pt-BR')} págs)</span>`
+                        : '';
+                    const desc = item.descricao_tipo || (IPS_SHIJIBIRA.has(item.ip) ? 'SHIJIBIRA' : 'OFFICE');
+                    const badgeCor = desc === 'SHIJIBIRA' ? '#d63031' : (desc === 'EPSON' ? '#006680' : (desc === 'ZEBRA' ? '#111111' : '#0984e3'));
+
+                    return `
+                        <div style="border-bottom:1px solid var(--border-color); padding:12px 0; font-size:0.86rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; gap:8px;">
+                                <div>
+                                    <strong style="color:var(--brand-primary);">${item.setor || item.colaborador}</strong>
+                                    <small style="color:#3498db;">(${item.ip || '-'})</small>
+                                    <span style="background:${badgeCor}; color:#fff; padding:1px 6px; border-radius:4px; font-size:0.7rem; font-weight:800; margin-left:5px;">${desc}</span>
+                                </div>
+                                <small style="color:var(--text-secondary);">${item.data_hora}</small>
+                            </div>
+                            <p style="margin:3px 0;"><strong>Insumos Trocados:</strong> ${insumos}</p>
+                            <p style="margin:3px 0;"><strong>Contadores:</strong> Anterior: <b>${contAnt}</b> &rarr; Atual: <b>${contAtual}</b>${delta}</p>
+                            <p style="margin:3px 0;"><strong>Níveis no Momento:</strong> Toner: <span style="color:var(--text-primary);">${item.toner_nivel || 'N/A'}</span> | Papel: <b>${item.papel_status || 'OK'}</b></p>
+                            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:3px;">
+                                <span><strong>Técnico:</strong> ${item.tecnico || item.colaborador || 'TI'}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<p>Erro ao carregar histórico.</p>';
+            }
+        }
+
+        function abrirModalChecklistRicoh() {
+            const listContainer = document.getElementById('checklistSelectList');
+            const ricohs = todasImpressoras.filter(i => {
+                const isRicoh = obterMarcaReal(i) === 'ricoh';
+                const batePlanta = plantaSelecionada === 'todas' || obterPlanta(i) === plantaSelecionada;
+                return isRicoh && batePlanta;
+            });
+
+            if (ricohs.length === 0) {
+                alert('Nenhuma impressora Ricoh encontrada para a planta selecionada.');
+                return;
+            }
+
+            listContainer.innerHTML = ricohs.map(i => {
+                const desc = obterDescricaoTipo(i);
+                const isShij = desc === 'SHIJIBIRA';
+                const temAlerta = Boolean(i.alerta_toner || i.alerta_papel || !i.online);
+                const badgeHtml = isShij
+                    ? `<span style="background:#d63031; color:#fff; padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:800;">SHIJIBIRA</span>`
+                    : `<span style="background:rgba(9,132,227,0.14); color:#0984e3; padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:800;">OFFICE</span>`;
+
+                return `
+                    <label class="checklist-select-row" data-search="${(i.setor + ' ' + i.ip + ' ' + i.modelo + ' ' + desc).toLowerCase()}">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <input type="checkbox" class="chk-pdf-imp" value="${i.ip}" data-tipo-desc="${desc.toLowerCase()}" data-alerta="${temAlerta}" checked onchange="atualizarContadorChecklistPDF()">
+                            <div>
+                                <div style="font-weight:700; font-size:0.88rem; color:var(--text-primary);">
+                                    ${i.setor} ${badgeHtml}
+                                </div>
+                                <div style="font-size:0.78rem; color:var(--text-secondary);">
+                                    IP: <b>${i.ip}</b> | ${i.modelo} | ${i.online ? '<span style="color:#27ae60;">ONLINE</span>' : '<span style="color:#e74c3c;">OFFLINE</span>'}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.76rem; color:var(--text-secondary); text-align:right; max-width:210px;">
+                            ${i.toner || '-'}
+                        </div>
+                    </label>
+                `;
+            }).join('');
+
+            document.getElementById('filtroModalChecklist').value = '';
+            atualizarContadorChecklistPDF();
+            document.getElementById('modalChecklistPDF').style.display = 'flex';
+        }
+
+        function filtrarListaChecklistPDF() {
+            const termo = document.getElementById('filtroModalChecklist').value.toLowerCase().trim();
+            document.querySelectorAll('.checklist-select-row').forEach(row => {
+                row.style.display = row.dataset.search.includes(termo) ? 'flex' : 'none';
+            });
+        }
+
+        function selecionarChecklistGrupo(modo) {
+            document.querySelectorAll('.chk-pdf-imp').forEach(chk => {
+                if (modo === 'todas') chk.checked = true;
+                else if (modo === 'nenhuma') chk.checked = false;
+                else if (modo === 'shijibira') chk.checked = (chk.dataset.tipoDesc === 'shijibira');
+                else if (modo === 'office') chk.checked = (chk.dataset.tipoDesc === 'office');
+                else if (modo === 'alerta') chk.checked = (chk.dataset.alerta === 'true');
+            });
+            atualizarContadorChecklistPDF();
+        }
+
+        function atualizarContadorChecklistPDF() {
+            const qtd = document.querySelectorAll('.chk-pdf-imp:checked').length;
+            document.getElementById('countChecklistSelecionadas').innerText = qtd;
+        }
+
+        async function gerarPDFChecklistSelecionadas() {
+            const ipsSelecionados = new Set(Array.from(document.querySelectorAll('.chk-pdf-imp:checked')).map(c => c.value));
+            if (ipsSelecionados.size === 0) {
+                alert('Selecione pelo menos uma impressora para gerar o PDF.');
+                return;
+            }
+
+            const incluirTrocas = document.getElementById('chkIncluirTrocasNoPdf').checked;
+            const selecionadas = todasImpressoras.filter(i => ipsSelecionados.has(i.ip));
+
+            let trocasFiltradas = [];
+            if (incluirTrocas) {
+                try {
+                    const res = await fetch('/api/abastecimentos');
+                    const todasTrocas = await res.json();
+                    trocasFiltradas = todasTrocas.filter(t => ipsSelecionados.has(t.ip)).slice(0, 30);
+                } catch (e) {
+                    trocasFiltradas = [];
+                }
+            }
+
+            const agora = new Date();
+            const dataString = agora.toLocaleDateString('pt-BR');
+            const horaString = agora.toLocaleTimeString('pt-BR');
+
+            const htmlSecaoTrocas = (incluirTrocas && trocasFiltradas.length > 0) ? `
+                <div style="margin-top: 22px; page-break-inside: avoid;">
+                    <h3 style="color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 5px; margin-bottom: 10px; font-size: 1rem;">
+                        Registro de Trocas de Insumos (Contadores &amp; Níveis)
+                    </h3>
+                    <table border="1" cellpadding="6" style="width:100%; border-collapse:collapse; font-size:0.78rem; text-align:left;">
+                        <thead>
+                            <tr style="background-color: #f4f6f9;">
+                                <th>Data/Hora</th>
+                                <th>Equipamento / Descrição</th>
+                                <th>Insumos Trocados</th>
+                                <th>Contador Anterior</th>
+                                <th>Contador Atual</th>
+                                <th>Níveis no Momento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${trocasFiltradas.map(t => {
+                                const cAnt = t.contador_anterior !== undefined && t.contador_anterior !== 'N/A' && !isNaN(t.contador_anterior)
+                                    ? Number(t.contador_anterior).toLocaleString('pt-BR') : (t.contador_anterior || '-');
+                                const cAtu = (t.contador_atual ?? t.contador_momento) !== undefined && (t.contador_atual ?? t.contador_momento) !== 'N/A' && !isNaN(t.contador_atual ?? t.contador_momento)
+                                    ? Number(t.contador_atual ?? t.contador_momento).toLocaleString('pt-BR') : (t.contador_atual ?? t.contador_momento ?? '-');
+                                const deltaStr = t.delta_paginas !== null && t.delta_paginas !== undefined
+                                    ? `<br><span style="color:#27ae60; font-weight:bold;">(Δ +${Number(t.delta_paginas).toLocaleString('pt-BR')})</span>` : '';
+                                const desc = t.descricao_tipo || (IPS_SHIJIBIRA.has(t.ip) ? 'SHIJIBIRA' : 'OFFICE');
+                                return `
+                                    <tr>
+                                        <td>${t.data_hora}<br><small>${t.tecnico || 'TI'}</small></td>
+                                        <td><strong>${t.setor}</strong><br><small>${t.ip} • <b>${desc}</b></small></td>
+                                        <td><strong>${(t.insumos_trocados || []).join(', ')}</strong></td>
+                                        <td>${cAnt}</td>
+                                        <td><strong>${cAtu}</strong>${deltaStr}</td>
+                                        <td>Toner: ${t.toner_nivel || '-'}<br>Papel: <b>${t.papel_status || 'OK'}</b></td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            ` : '';
+
+            const template = document.getElementById('pdfTemplate');
+            template.style.display = 'block';
+            template.innerHTML = `
+                <div style="border-bottom: 3px solid #cc0000; padding-bottom: 10px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="color: #cc0000; margin: 0; font-size: 1.25rem;">PRISM — Checklist Operacional</h2>
+                        <p style="color: #555; font-size: 0.85rem; margin-top: 4px;">
+                            Gerado em: <strong>${dataString} às ${horaString}</strong> |
+                            Ativos selecionados: <strong>${selecionadas.length}</strong> |
+                            🚗 TAKT Shijibira: <strong>${taktCarros} carros</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <table border="1" cellpadding="6" style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left;">
+                    <thead>
+                        <tr style="background-color: #f4f6f9;">
+                            <th>Local / Setor</th>
+                            <th>Descrição</th>
+                            <th>IP / Série</th>
+                            <th>Status</th>
+                            <th>Níveis de Insumos (Toner / Papel)</th>
+                            <th>Autonomia TAKT</th>
+                            <th>Contador Atual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${selecionadas.map(i => {
+                            const desc = obterDescricaoTipo(i);
+                            const isShij = desc === 'SHIJIBIRA';
+                            const prev = calcularPrevisaoTaktShijibira(i);
+                            const txtPrev = prev
+                                ? `${prev.folhasNecessarias} fls (${prev.folhasPorCarro}/carro)<br><strong style="color:${prev.umPacoteDaConta ? 'green' : '#d35400'};">${prev.pacotesNecessarios} pct ${prev.tipoPapel}</strong>`
+                                : '<span style="color:#888;">N/A (Office)</span>';
+                            const papelTxt = i.alerta_papel ? '<span style="color:#d35400; font-weight:bold;">⚠️ Alerta Papel</span>' : '<span style="color:#27ae60;">Papel OK</span>';
+                            const contAtual = i.contador_total && !isNaN(i.contador_total) ? Number(i.contador_total).toLocaleString('pt-BR') : '-';
+
+                            return `
+                                <tr>
+                                    <td><strong>${i.setor}</strong><br><small>${i.modelo}</small></td>
+                                    <td style="text-align:center;">
+                                        <span style="background:${isShij ? '#d63031' : '#0984e3'}; color:#fff; padding:2px 6px; border-radius:4px; font-size:0.72rem; font-weight:bold;">
+                                            ${desc}
+                                        </span>
+                                    </td>
+                                    <td>${i.ip}<br><small>${i.numero_serie || '-'}</small></td>
+                                    <td style="color:${i.online ? 'green' : 'red'}; font-weight:bold;">${i.online ? 'ONLINE' : 'OFFLINE'}</td>
+                                    <td>${i.toner ? i.toner.replace(/ \| /g, '<br>') : '-'}<br>${papelTxt}</td>
+                                    <td>${txtPrev}</td>
+                                    <td><strong>${contAtual}</strong><br><small>${i.contador_data || '-'}</small></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+
+                ${htmlSecaoTrocas}
+            `;
+
+            fecharModalChecklistPDF();
+            html2pdf()
+                .set({
+                    margin: 8,
+                    filename: `checklist_prism_${dataString.replace(/\//g, '-')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                })
+                .from(template)
+                .save()
+                .then(() => { template.style.display = 'none'; });
+        }
+
+        function gerarPDFDiario() {
+            const dataAgrupada = new Date();
+            const dataString = dataAgrupada.toLocaleDateString('pt-BR');
+            const horaString = dataAgrupada.toLocaleTimeString('pt-BR');
+
+            const impressorasFiltradas = todasImpressoras.filter(i => {
+                const batePlanta = plantaSelecionada === 'todas' || obterPlanta(i) === plantaSelecionada;
+                const bateShijibira = !apenasShijibira || isShijibira(i);
+                return batePlanta && bateShijibira;
+            });
+
+            const tituloFiltro = `${plantaSelecionada.toUpperCase()}${apenasShijibira ? ' - SHIJIBIRA' : ''}`;
+
+            const template = document.getElementById('pdfTemplate');
+            template.style.display = 'block';
+            template.innerHTML = `
+                <h2>PRISM — Relatório Geral de Ativos (${tituloFiltro})</h2>
+                <p style="color:#555; margin-bottom:15px; font-size: 0.9rem;">Relatório gerado em: <strong>${dataString} às ${horaString}</strong></p>
+                <table border="1" cellpadding="6" style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:left;">
+                    <tr style="background-color: #f4f6f9;">
+                        <th>Local</th><th>Descrição</th><th>Marca / Modelo</th><th>IP / Série</th><th>Status</th><th>Data da Coleta</th>
+                    </tr>
+                    ${impressorasFiltradas.map(i => {
+                        const desc = obterDescricaoTipo(i);
+                        const corDesc = desc === 'SHIJIBIRA' ? '#d63031' : (desc === 'EPSON' ? '#006680' : (desc === 'ZEBRA' ? '#111111' : '#0984e3'));
+                        return `
+                            <tr>
+                                <td><strong>${i.setor}</strong></td>
+                                <td><b style="color:${corDesc};">${desc}</b></td>
+                                <td>${i.marca}<br><small>${i.modelo}</small></td>
+                                <td>${i.ip}<br><small>${i.numero_serie}</small></td>
+                                <td style="color:${i.online ? 'green' : 'red'}; font-weight:bold;">${i.online ? 'ONLINE' : 'OFFLINE'}</td>
+                                <td>${i.contador_data || '-'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </table>
+            `;
+            html2pdf().from(template).save(`relatorio_geral_prism_${plantaSelecionada}${apenasShijibira ? '_shijibira' : ''}.pdf`).then(() => template.style.display = 'none');
+        }
+
+        initTheme();
+        buscarDados();
+        setInterval(buscarDados, 60000);
+    </script>
+</body>
+</html>

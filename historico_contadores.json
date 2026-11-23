@@ -1,0 +1,522 @@
+[
+    {
+        "ip": "172.27.24.3",
+        "setor": "KADOU CENTER MATEHAN",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R100009",
+        "site": "SOROCABA 2",
+        "contador": 36177,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.24.4",
+        "setor": "ÁREA CAFÉ JUNDATE CENTRAL",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R200201",
+        "site": "SOROCABA 2",
+        "contador": 79894,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.24.1",
+        "setor": "ÁREA DO CAFE DOOR",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R700133",
+        "site": "SOROCABA 2",
+        "contador": 68984,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.26.2",
+        "setor": "BUMPER/RESINA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620258",
+        "site": "SOROCABA 2",
+        "contador": 44666,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.11.201",
+        "setor": "SHOP OFFICE SOR 2",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R700165",
+        "site": "SOROCABA 2",
+        "contador": 270381,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.24.7",
+        "setor": "PARTS QUALITY ILC",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620260",
+        "site": "SOROCABA 2",
+        "contador": 20960,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.26.33",
+        "setor": "PINTURA - INSPEÇÃO ED",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620291",
+        "site": "SOROCABA 2",
+        "contador": 19356,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.27.1",
+        "setor": "KADOU CENTER FUNILARIA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620318",
+        "site": "SOROCABA 2",
+        "contador": 39748,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.26.4",
+        "setor": "OFFICE CABINE PINTURA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620354",
+        "site": "SOROCABA 2",
+        "contador": 23119,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.24.2",
+        "setor": "INSPEÇÃO-OFFICE",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620358",
+        "site": "SOROCABA 2",
+        "contador": 31078,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.24.34",
+        "setor": "TKL DIVERGENCIA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620364",
+        "site": "SOROCABA 2",
+        "contador": 131952,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.26.8",
+        "setor": "PRODUÇÃO BUMPER RESINA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620379",
+        "site": "SOROCABA 2",
+        "contador": 21127,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.11.203",
+        "setor": "SHOP OFFICE SOR2",
+        "marca": "RICOH",
+        "modelo": "MP CW2201SP",
+        "serie": "G931M110118",
+        "site": "SOROCABA 2",
+        "contador": 9600,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.10.217",
+        "setor": "SHOP OFFICE SOR 2",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P607160",
+        "site": "SOROCABA 2",
+        "contador": 16022,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.24.35",
+        "setor": "MONTAGEM DO CHASSIS",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620414",
+        "site": "SOROCABA 2",
+        "contador": 19047,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.24.5",
+        "setor": "KADOU CENTER MONTAGEM",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R600009",
+        "site": "SOROCABA 2",
+        "contador": 70779,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.28.52.130",
+        "setor": "OFFICE FERRAMENTARIA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R920002",
+        "site": "SOROCABA 2",
+        "contador": 27244,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.26.9",
+        "setor": "LABORATÓRIO RESINA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R920025",
+        "site": "SOROCABA 2",
+        "contador": 22070,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.27.2",
+        "setor": "FUNILARIA SHELL BODY/ÁREA DO CAFÉ",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R920029",
+        "site": "SOROCABA 2",
+        "contador": 165802,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.26.1",
+        "setor": "OFFICE DA PINTURA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R920081",
+        "site": "SOROCABA 2",
+        "contador": 56294,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.24.36",
+        "setor": "MONTAGEM TRIM",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R920108",
+        "site": "SOROCABA 2",
+        "contador": 9032,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.26.7",
+        "setor": "PINTURA - TOP COAT",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412RB20003",
+        "site": "SOROCABA 2",
+        "contador": 29682,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.32.75",
+        "setor": "MH-SPS DOOR 02 RH",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602493",
+        "site": "SOROCABA 2",
+        "contador": 45384,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.40.68",
+        "setor": "PRODUÇÃO BUMPER PINTURA",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602555",
+        "site": "SOROCABA 2",
+        "contador": 80682,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.32.77",
+        "setor": "MH-JDT DA COLUNA DIREÇÃO",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602557",
+        "site": "SOROCABA 2",
+        "contador": 217639,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.32.72",
+        "setor": "MONTAGEM ENGINE",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602558",
+        "site": "SOROCABA 2",
+        "contador": 123024,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.32.74",
+        "setor": "MONTAGEM RR-SUSPENSÃO",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602561",
+        "site": "SOROCABA 2",
+        "contador": 78528,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.32.214",
+        "setor": "CQ - INSPEÇÃO A",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602562",
+        "site": "SOROCABA 2",
+        "contador": 165813,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.32.76",
+        "setor": "MH-SPS DOOR 2 LH",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602563",
+        "site": "SOROCABA 2",
+        "contador": 110475,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.32.209",
+        "setor": "CQ - INSPEÇÃO A BACKUP",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602565",
+        "site": "SOROCABA 2",
+        "contador": 134035,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.24.33",
+        "setor": "TKL IMPORTADOS",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602567",
+        "site": "SOROCABA 2",
+        "contador": 59830,
+        "data_hora": "2026-11-19 14:12"
+    },
+    {
+        "ip": "172.27.10.50",
+        "setor": "SERVIÇO DE SAÚDE",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4414R300099",
+        "site": "SOROCABA 2",
+        "contador": 2947,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.22.5",
+        "setor": "SHOP OFFICE SOR2/CCR",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4414R500033",
+        "site": "SOROCABA 2",
+        "contador": 1007,
+        "data_hora": "2026-11-19 06:04"
+    },
+    {
+        "ip": "172.27.32.220",
+        "setor": "MONTAGEM CHASSIS/BACKUP",
+        "marca": "RICOH",
+        "modelo": "SP 8400DN",
+        "serie": "Y873R110001",
+        "site": "SOROCABA 2",
+        "contador": 7701,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.32.70",
+        "setor": "MONTAGEM TRIM",
+        "marca": "RICOH",
+        "modelo": "SP 8400DN",
+        "serie": "Y873R110003",
+        "site": "SOROCABA 2",
+        "contador": 380267,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.32.73",
+        "setor": "MONTAGEM FINAL",
+        "marca": "RICOH",
+        "modelo": "SP 8400DN",
+        "serie": "Y873R110252",
+        "site": "SOROCABA 2",
+        "contador": 224334,
+        "data_hora": "2026-11-19 14:14"
+    },
+    {
+        "ip": "172.27.32.71",
+        "setor": "MONTAGEM CHASSIS",
+        "marca": "RICOH",
+        "modelo": "SP 8400DN",
+        "serie": "Y873R110254",
+        "site": "SOROCABA 2",
+        "contador": 478575,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.11.200",
+        "setor": "SHOP OFFICE/COLOR SOR 2",
+        "marca": "RICOH",
+        "modelo": "IM C3010",
+        "serie": "9155R210525",
+        "site": "SOROCABA 2",
+        "contador": 13170,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.27.32.219",
+        "setor": "MONTAGEM TRIM FINAL/BACKUP",
+        "marca": "RICOH",
+        "modelo": "SP 8400DN",
+        "serie": "Y879R200058",
+        "site": "SOROCABA 2",
+        "contador": 607348,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.6",
+        "setor": "EXPEDIÇÃO DOMÉSTICA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R520223",
+        "site": "CLP",
+        "contador": 281948,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.107.19",
+        "setor": "OFFICE",
+        "marca": "RICOH",
+        "modelo": "IM C3000",
+        "serie": "3102R390224",
+        "site": "CLP",
+        "contador": 135498,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.20",
+        "setor": "RESERVA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620337",
+        "site": "CLP",
+        "contador": 139765,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.10",
+        "setor": "RECEBIMENTO /CS SMALL",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602707",
+        "site": "CLP",
+        "contador": 179022,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.107.50",
+        "setor": "FISCAL",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620356",
+        "site": "CLP",
+        "contador": 236371,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.7",
+        "setor": "EXPORTAÇÃO",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620365",
+        "site": "CLP",
+        "contador": 193739,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.38",
+        "setor": "LOGÍSTICA REVERSA",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R200073",
+        "site": "CLP",
+        "contador": 114422,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.5",
+        "setor": "RESERVE IN OUT \" FA\"",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602695",
+        "site": "CLP",
+        "contador": 152719,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.33",
+        "setor": "HOKAN",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602481",
+        "site": "CLP",
+        "contador": 91838,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.36",
+        "setor": "GPS",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P602712",
+        "site": "CLP",
+        "contador": 30379,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.50",
+        "setor": "RECEBIMENTO DOCA",
+        "marca": "RICOH",
+        "modelo": "P 502",
+        "serie": "5382P607101",
+        "site": "CLP",
+        "contador": 58935,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.107.20",
+        "setor": "FISCAL",
+        "marca": "RICOH",
+        "modelo": "IM 2500",
+        "serie": "4412R620403",
+        "site": "CLP",
+        "contador": 157901,
+        "data_hora": "2026-11-19 14:13"
+    },
+    {
+        "ip": "172.28.100.34",
+        "setor": "FISCAL",
+        "marca": "RICOH",
+        "modelo": "PRO 8300",
+        "serie": "3679C800118",
+        "site": "CLP",
+        "contador": 2193957,
+        "data_hora": "2026-11-19 14:13"
+    }
+]
